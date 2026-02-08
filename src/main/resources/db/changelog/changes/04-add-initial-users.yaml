@@ -11,7 +11,7 @@ databaseChangeLog:
                   value: admin@carsharing.com
               - column:
                   name: password
-                  value: "$2a$10$89vLp/hS.UjG7lS.mK2XreR8V6p3n5PjK6H7Uv6W5mN6R5W8D6XyO" # hash for: admin1234
+                  value: "$2a$12$CxQ.FYrGA7gjxc3/Xjo.7.8oTSBy.W1ULkAfUcHqgQCES9vb1fGvi" # hash for: admin1234
               - column:
                   name: first_name
                   value: Admin
