@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-cars-table
+      id: 01-create-cars-table
       author: yurii_kukharenko
       changes:
         - createTable:
