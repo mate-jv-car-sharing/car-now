@@ -3,3 +3,7 @@ databaseChangeLog:
       file: db/changelog/changes/01-create-cars-table.yaml
   - include:
       file: db/changelog/changes/02-create-users-and-roles-tables.yaml
+  - include:
+      file: db/changelog/changes/03-add-roles.yaml
+  - include:
+      file: db/changelog/changes/04-add-initial-users.yaml

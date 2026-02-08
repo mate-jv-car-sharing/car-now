@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 04-add-initial-users
+      author: yurii_kukharenko
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: admin@carsharing.com
+              - column:
+                  name: password
+                  value: "$2a$10$89vLp/hS.UjG7lS.mK2XreR8V6p3n5PjK6H7Uv6W5mN6R5W8D6XyO" # hash for: admin1234
+              - column:
+                  name: first_name
+                  value: Admin
+              - column:
+                  name: last_name
+                  value: CarSharing
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: user@carsharing.com
+              - column:
+                  name: password
+                  value: "$2a$12$uBn7FJdiM2QlCSyT4mPA5.neSZq/6r5v.5dnyaWWxQ6ANCgcjTL62" # hash for: user1234
+              - column:
+                  name: first_name
+                  value: User
+              - column:
+                  name: last_name
+                  value: CarSharing
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'admin@carsharing.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'MANAGER')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'user@carsharing.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'CUSTOMER')"
