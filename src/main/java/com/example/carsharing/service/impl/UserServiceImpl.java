@@ -4,7 +4,6 @@ import com.example.carsharing.dto.user.UserRegistrationRequestDto;
 import com.example.carsharing.dto.user.UserResponseDto;
 import com.example.carsharing.exception.EntityNotFoundException;
 import com.example.carsharing.exception.RegistrationException;
-import com.example.carsharing.mapper.CarMapper;
 import com.example.carsharing.mapper.UserMapper;
 import com.example.carsharing.model.Role;
 import com.example.carsharing.model.User;
@@ -25,7 +24,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
