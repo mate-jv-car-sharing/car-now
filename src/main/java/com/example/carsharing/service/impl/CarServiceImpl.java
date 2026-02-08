@@ -7,8 +7,8 @@ import com.example.carsharing.mapper.CarMapper;
 import com.example.carsharing.model.Car;
 import com.example.carsharing.repository.CarRepository;
 import com.example.carsharing.service.CarService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +28,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarResponseDto> findAll(Pageable pageable) {
+    public Page<CarResponseDto> findAll(Pageable pageable) {
         return carRepository.findAll(pageable)
-                .stream()
-                .map(carMapper::toDto)
-                .toList();
+                .map(carMapper::toDto);
     }
 
     @Override
