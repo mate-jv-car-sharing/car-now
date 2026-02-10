@@ -1,4 +1,4 @@
-package com.example.carsharing.model;
+package com.example.carsharing.model.enums;
 
 public enum CarType {
     SEDAN,
