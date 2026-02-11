@@ -41,7 +41,8 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers(
                                         antMatcher("/auth/**"),
-                                        antMatcher(HttpMethod.GET, "/cars/**"))
+                                        antMatcher(HttpMethod.GET, "/cars/**"),
+                                        antMatcher("/error"))
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
