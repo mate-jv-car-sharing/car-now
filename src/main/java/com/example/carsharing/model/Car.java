@@ -1,5 +1,6 @@
 package com.example.carsharing.model;
 
+import com.example.carsharing.model.enums.CarType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
