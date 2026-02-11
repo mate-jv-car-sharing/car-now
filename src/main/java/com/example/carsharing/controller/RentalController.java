@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +23,9 @@ public class RentalController {
 
     private final RentalService rentalService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
     public RentalResponseDto createRental(
             @AuthenticationPrincipal User user,
             @RequestBody CreateRentalRequestDto requestDto
@@ -32,9 +33,18 @@ public class RentalController {
         return rentalService.create(user, requestDto);
     }
 
-    @PostMapping("/{id}/return")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
+    @GetMapping("/{id}")
+    public RentalResponseDto findById(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long id
+    ) {
+        return rentalService.findById(user, id);
+    }
+
+    @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/{id}/return")
     public void returnRental(
             @AuthenticationPrincipal User user,
             @PathVariable Long id

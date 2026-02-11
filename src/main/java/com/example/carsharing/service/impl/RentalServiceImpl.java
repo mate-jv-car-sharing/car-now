@@ -45,12 +45,21 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    public RentalResponseDto findById(User user, Long id) {
+        Rental rental = rentalRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can't find rental with id " + id)
+        );
+        validateRentalOwnership(user, rental);
+        return rentalMapper.toDto(rental);
+    }
+
+    @Override
     @Transactional
     public void returnRental(User user, Long rentalId) {
         Rental existingRental = rentalRepository.findById(rentalId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find rental with id " + rentalId)
         );
-        validateOwnership(user, existingRental);
+        validateRentalOwnership(user, existingRental);
         if (existingRental.getActualReturnDate() != null) {
             throw new RentalException("Rental with id " + rentalId + " is already returned");
         }
@@ -60,7 +69,7 @@ public class RentalServiceImpl implements RentalService {
         rentalRepository.save(existingRental);
     }
 
-    private void validateOwnership(User user, Rental rental) {
+    private void validateRentalOwnership(User user, Rental rental) {
         boolean isManager = user.getRoles().stream()
                 .anyMatch(role -> role.getName().equals(Role.RoleName.MANAGER));
         if (!isManager && !rental.getUser().getId().equals(user.getId())) {
