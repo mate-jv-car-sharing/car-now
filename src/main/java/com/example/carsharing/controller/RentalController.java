@@ -2,9 +2,12 @@ package com.example.carsharing.controller;
 
 import com.example.carsharing.dto.rental.CreateRentalRequestDto;
 import com.example.carsharing.dto.rental.RentalResponseDto;
+import com.example.carsharing.dto.rental.RentalSearchParameters;
 import com.example.carsharing.model.User;
 import com.example.carsharing.service.RentalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,6 +43,15 @@ public class RentalController {
             @PathVariable Long id
     ) {
         return rentalService.findById(user, id);
+    }
+
+    @GetMapping
+    public Page<RentalResponseDto> getRentals(
+            @AuthenticationPrincipal User user,
+            RentalSearchParameters  searchParameters,
+            Pageable pageable
+    ) {
+        return rentalService.getRentals(user, searchParameters, pageable);
     }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
