@@ -48,7 +48,7 @@ public class RentalController {
     @GetMapping
     public Page<RentalResponseDto> getRentals(
             @AuthenticationPrincipal User user,
-            RentalSearchParameters  searchParameters,
+            RentalSearchParameters searchParameters,
             Pageable pageable
     ) {
         return rentalService.getRentals(user, searchParameters, pageable);
