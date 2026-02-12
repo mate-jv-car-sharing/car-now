@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -39,9 +40,10 @@ public class Car {
     @Column(nullable = false)
     private int inventory;
 
-    @Column(name = "daily_fee", nullable = false)
+    @Column(name = "daily_fee", nullable = false, precision = 6, scale = 2)
     private BigDecimal dailyFee;
 
+    @Setter(AccessLevel.NONE)
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 }

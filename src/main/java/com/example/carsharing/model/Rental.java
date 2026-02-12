@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,6 +26,7 @@ import org.hibernate.annotations.SQLRestriction;
 public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @CreationTimestamp
@@ -44,6 +46,7 @@ public class Rental {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Setter(AccessLevel.NONE)
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 }
