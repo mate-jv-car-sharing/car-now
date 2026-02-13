@@ -1,4 +1,4 @@
-package com.example.carsharing.service.impl;
+package com.example.carsharing.service.rental;
 
 import com.example.carsharing.dto.rental.CreateRentalRequestDto;
 import com.example.carsharing.dto.rental.RentalResponseDto;
@@ -13,7 +13,8 @@ import com.example.carsharing.model.User;
 import com.example.carsharing.repository.CarRepository;
 import com.example.carsharing.repository.rental.RentalRepository;
 import com.example.carsharing.repository.specification.rental.RentalSpecificationBuilder;
-import com.example.carsharing.service.RentalService;
+import com.example.carsharing.service.notification.NotificationService;
+import com.example.carsharing.service.notification.factory.RentalMessageFactory;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     private final RentalSpecificationBuilder rentalSpecificationBuilder;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -46,6 +48,8 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = rentalMapper.toModel(requestDto);
         rental.setCar(existingCar);
         rental.setUser(user);
+
+        notificationService.sendMessage(RentalMessageFactory.rentalCreation(rental));
 
         return rentalMapper.toDto(rentalRepository.save(rental));
     }
@@ -87,6 +91,7 @@ public class RentalServiceImpl implements RentalService {
         existingRental.setActualReturnDate(LocalDate.now());
         Car rentedCar = existingRental.getCar();
         rentedCar.setInventory(rentedCar.getInventory() + 1);
+        notificationService.sendMessage(RentalMessageFactory.rentalReturning(existingRental));
         rentalRepository.save(existingRental);
     }
 

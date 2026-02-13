@@ -1,4 +1,4 @@
-package com.example.carsharing.service.impl;
+package com.example.carsharing.service.car;
 
 import com.example.carsharing.dto.car.CarRequestDto;
 import com.example.carsharing.dto.car.CarResponseDto;
@@ -6,7 +6,6 @@ import com.example.carsharing.exception.EntityNotFoundException;
 import com.example.carsharing.mapper.CarMapper;
 import com.example.carsharing.model.Car;
 import com.example.carsharing.repository.CarRepository;
-import com.example.carsharing.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

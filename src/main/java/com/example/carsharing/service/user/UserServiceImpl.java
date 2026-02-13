@@ -1,4 +1,4 @@
-package com.example.carsharing.service.impl;
+package com.example.carsharing.service.user;
 
 import com.example.carsharing.dto.user.UserRegistrationRequestDto;
 import com.example.carsharing.dto.user.UserResponseDto;
@@ -9,7 +9,6 @@ import com.example.carsharing.model.Role;
 import com.example.carsharing.model.User;
 import com.example.carsharing.repository.RoleRepository;
 import com.example.carsharing.repository.UserRepository;
-import com.example.carsharing.service.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
