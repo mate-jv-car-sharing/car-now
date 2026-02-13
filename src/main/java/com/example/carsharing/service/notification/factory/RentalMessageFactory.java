@@ -34,4 +34,22 @@ public class RentalMessageFactory {
         rental.getCar().getModel(),
         rental.getCar().getInventory());
     }
+
+    public static String rentalOverdue(Rental rental) {
+        return String.format("""
+        - Status: OVERDUE
+        - Rental id: %s
+        - User: %s
+        - Brand: %s
+        - Model: %s
+        - Rental date: %s
+        - Return date: %s
+        """,
+        rental.getId(),
+        rental.getUser().getEmail(),
+        rental.getCar().getBrand(),
+        rental.getCar().getModel(),
+        rental.getRentalDate(),
+        rental.getReturnDate());
+    }
 }

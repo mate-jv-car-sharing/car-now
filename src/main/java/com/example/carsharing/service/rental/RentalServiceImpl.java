@@ -11,7 +11,7 @@ import com.example.carsharing.model.Rental;
 import com.example.carsharing.model.Role;
 import com.example.carsharing.model.User;
 import com.example.carsharing.repository.CarRepository;
-import com.example.carsharing.repository.rental.RentalRepository;
+import com.example.carsharing.repository.RentalRepository;
 import com.example.carsharing.repository.specification.rental.RentalSpecificationBuilder;
 import com.example.carsharing.service.notification.NotificationService;
 import com.example.carsharing.service.notification.factory.RentalMessageFactory;
