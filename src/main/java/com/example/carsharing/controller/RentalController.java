@@ -4,7 +4,7 @@ import com.example.carsharing.dto.rental.CreateRentalRequestDto;
 import com.example.carsharing.dto.rental.RentalResponseDto;
 import com.example.carsharing.dto.rental.RentalSearchParameters;
 import com.example.carsharing.model.User;
-import com.example.carsharing.service.RentalService;
+import com.example.carsharing.service.rental.RentalService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;

@@ -5,7 +5,7 @@ import com.example.carsharing.dto.user.UserLoginResponseDto;
 import com.example.carsharing.dto.user.UserRegistrationRequestDto;
 import com.example.carsharing.dto.user.UserResponseDto;
 import com.example.carsharing.security.AuthenticationService;
-import com.example.carsharing.service.UserService;
+import com.example.carsharing.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
