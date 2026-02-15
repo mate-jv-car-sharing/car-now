@@ -60,7 +60,7 @@ public class PaymentController {
 
     @GetMapping
     public Page<PaymentResponseDto> getPayments(
-            @RequestParam(value = "user_id", required = false) Long userId,
+            @RequestParam(value = "userId", required = false) Long userId,
             @AuthenticationPrincipal User user,
             Pageable pageable) {
         return paymentService.getAllByUser(user, userId, pageable);
