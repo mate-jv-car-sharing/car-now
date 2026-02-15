@@ -11,7 +11,7 @@ databaseChangeLog:
                   value: admin@carsharing.com
               - column:
                   name: password
-                  value: "$2a$12$CxQ.FYrGA7gjxc3/Xjo.7.8oTSBy.W1ULkAfUcHqgQCES9vb1fGvi" # hash for: admin1234
+                  value: "$2a$12$CFOe.ti5gG2oy.THEsSK8uJBBRrStg3Z8XD86nx7IleGXZZrUvQy." # hash for: Strongpass123!
               - column:
                   name: first_name
                   value: Admin
@@ -26,7 +26,7 @@ databaseChangeLog:
                   value: user@carsharing.com
               - column:
                   name: password
-                  value: "$2a$12$uBn7FJdiM2QlCSyT4mPA5.neSZq/6r5v.5dnyaWWxQ6ANCgcjTL62" # hash for: user1234
+                  value: "$2a$12$CFOe.ti5gG2oy.THEsSK8uJBBRrStg3Z8XD86nx7IleGXZZrUvQy." # hash for: Strongpass123!
               - column:
                   name: first_name
                   value: User
