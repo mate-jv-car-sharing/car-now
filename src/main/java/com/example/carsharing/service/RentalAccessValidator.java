@@ -13,8 +13,7 @@ public class RentalAccessValidator {
     private final UserService userService;
 
     public void validateRentalOwnership(User user, Rental rental) {
-        boolean isManager = userService.isManager(user);
-        if (!isManager && !rental.getUser().getId().equals(user.getId())) {
+        if (!rental.getUser().getId().equals(user.getId())) {
             throw new RentalException(String.format(
                     "User with id %d is not the owner of the rental with id %d",
                     user.getId(),
