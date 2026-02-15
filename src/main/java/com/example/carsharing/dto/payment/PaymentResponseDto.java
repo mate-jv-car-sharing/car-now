@@ -9,5 +9,6 @@ public record PaymentResponseDto(
         PaymentStatus status,
         PaymentType type,
         BigDecimal amountToPay,
-        String sessionUrl
+        String sessionUrl,
+        String sessionId
 ) {}

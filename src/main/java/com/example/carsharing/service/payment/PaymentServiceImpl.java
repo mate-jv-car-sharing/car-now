@@ -3,6 +3,7 @@ package com.example.carsharing.service.payment;
 import com.example.carsharing.dto.payment.CreatePaymentRequestDto;
 import com.example.carsharing.dto.payment.PaymentResponseDto;
 import com.example.carsharing.exception.EntityNotFoundException;
+import com.example.carsharing.exception.PaymentException;
 import com.example.carsharing.mapper.PaymentMapper;
 import com.example.carsharing.model.Payment;
 import com.example.carsharing.model.Rental;
@@ -11,17 +12,19 @@ import com.example.carsharing.model.enums.PaymentStatus;
 import com.example.carsharing.model.enums.PaymentType;
 import com.example.carsharing.repository.PaymentRepository;
 import com.example.carsharing.repository.RentalRepository;
+import com.example.carsharing.service.RentalAccessValidator;
 import com.example.carsharing.service.user.UserService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final StripeService stripeService;
     private final PaymentMapper paymentMapper;
     private final UserService userService;
+    private final RentalAccessValidator rentalAccessValidator;
+    private final PaymentUrlBuilder paymentUrlBuilder;
 
     @Value("${app.payment.success-url}")
     private String successUrl;
@@ -42,29 +47,29 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponseDto create(CreatePaymentRequestDto request, User user) {
-        Rental rental = rentalRepository.findById(request.rentalId()).orElseThrow(
-                () -> new EntityNotFoundException("Can't find rental with id "
-                        + request.rentalId())
-        );
+        Rental rental = rentalRepository.findById(request.rentalId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find rental with id " + request.rentalId()
+                ));
+
+        if (!userService.isManager(user)) {
+            rentalAccessValidator.validateRentalOwnership(user, rental);
+        }
+
         BigDecimal amountToPay = calculateAmount(rental, request.type());
+        Map<String, String> urls = paymentUrlBuilder.buildUrls(rental, request.type());
         try {
-            String successSessionUrl = buildSuccessUrl(rental.getId(), request.type());
-            String cancelSessionUrl = buildCancelUrl(rental.getId());
             Session session = stripeService.createCheckoutSession(
                     "Car Rental Payment",
                     amountToPay,
-                    successSessionUrl,
-                    cancelSessionUrl
+                    urls.get("successUrl"),
+                    urls.get("cancelUrl")
             );
-            Payment payment = new Payment();
-            payment.setRental(rental);
-            payment.setType(request.type());
-            payment.setAmountToPay(amountToPay);
-            payment.setSessionId(session.getId());
-            payment.setSessionUrl(session.getUrl());
+            Payment payment = createPayment(request, rental, amountToPay, session);
             return paymentMapper.toDto(paymentRepository.save(payment));
         } catch (StripeException e) {
-            throw new RuntimeException("Failed to create Stripe session", e);
+            throw new PaymentException("Failed to create Stripe session for rental with id "
+                    + rental.getId(), e);
         }
     }
 
@@ -72,10 +77,10 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentResponseDto getById(Long paymentId, User user) {
         Payment payment = paymentRepository.findById(paymentId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find payment with id " + paymentId));
-        boolean isManager = userService.isManager(user);
-        if (!payment.getRental().getUser().getId().equals(user.getId())
-                && !isManager) {
-            throw new RuntimeException(String.format(
+
+        if (!rentalAccessValidator.isRentalOwner(user, payment.getRental())
+                && !userService.isManager(user)) {
+            throw new AccessDeniedException(String.format(
                     "Access denied for payment with id %d and user with id %d",
                     paymentId,
                     user.getId()));
@@ -95,65 +100,65 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Page<PaymentResponseDto> getAllByUser(
             User user,
-            Long requestedUserId,
+            Long requestUserId,
             Pageable pageable
     ) {
-        boolean isManager = userService.isManager(user);
-        Page<Payment> payments;
-        if (isManager) {
-            if (requestedUserId != null) {
-                payments = paymentRepository.findAllByRentalUserId(requestedUserId, pageable);
-            } else {
-                payments = paymentRepository.findAll(pageable);
-            }
-        } else {
-            payments = paymentRepository.findAllByRentalUserId(user.getId(), pageable);
-        }
-        return payments.map(paymentMapper::toDto);
+        Long userIdToQuery = userService.isManager(user)
+                ? requestUserId
+                : user.getId();
+        return (userIdToQuery != null
+                ? paymentRepository.findAllByRentalUserId(userIdToQuery, pageable)
+                : paymentRepository.findAll(pageable))
+                .map(paymentMapper::toDto);
     }
 
-    private BigDecimal calculateAmount(Rental rental, PaymentType type) {
+    private Payment createPayment(
+            CreatePaymentRequestDto request,
+            Rental rental,
+            BigDecimal amountToPay,
+            Session session) {
+        Payment payment = new Payment();
+        payment.setRental(rental);
+        payment.setType(request.type());
+        payment.setAmountToPay(amountToPay);
+        payment.setSessionId(session.getId());
+        payment.setSessionUrl(session.getUrl());
+        return payment;
+    }
+
+    private BigDecimal calculateBaseAmount(Rental rental) {
         BigDecimal dailyFee = rental.getCar().getDailyFee();
         long rentalDays = ChronoUnit.DAYS.between(
                 rental.getRentalDate(),
                 rental.getReturnDate()
         );
-        BigDecimal baseAmount = dailyFee.multiply(BigDecimal.valueOf(rentalDays));
+        return dailyFee.multiply(BigDecimal.valueOf(rentalDays));
+    }
 
-        if (type == PaymentType.PAYMENT) {
-            return baseAmount;
-        }
-        if (type == PaymentType.FINE) {
-            if (rental.getActualReturnDate() == null) {
-                throw new IllegalStateException(
-                        "Fine can be created only after rental is returned"
-                );
-            }
-            long overdueDays = ChronoUnit.DAYS.between(
-                    rental.getReturnDate(),
-                    rental.getActualReturnDate()
+    private BigDecimal calculateFineAmount(Rental rental) {
+        if (rental.getActualReturnDate() == null) {
+            throw new PaymentException(
+                    "Fine can be created only after rental is returned. "
+                    + "Rental with id " + rental.getId() + " is still active."
             );
-            if (overdueDays <= 0) {
-                return baseAmount;
-            }
-            BigDecimal overdueAmount = dailyFee
-                    .multiply(BigDecimal.valueOf(overdueDays))
-                    .multiply(FINE_MULTIPLIER);
-            return baseAmount.add(overdueAmount);
         }
-        throw new IllegalArgumentException("Unknown payment type");
+        long overdueDays = ChronoUnit.DAYS.between(
+                rental.getReturnDate(),
+                rental.getActualReturnDate()
+        );
+        if (overdueDays <= 0) {
+            return BigDecimal.ZERO;
+        }
+        return rental.getCar().getDailyFee()
+                .multiply(BigDecimal.valueOf(overdueDays))
+                .multiply(FINE_MULTIPLIER);
     }
 
-    private String buildSuccessUrl(Long rentalId, PaymentType type) {
-        return UriComponentsBuilder.fromUriString(successUrl)
-                .queryParam("rentalId", rentalId)
-                .queryParam("type", type)
-                .toUriString();
-    }
-
-    private String buildCancelUrl(Long rentalId) {
-        return UriComponentsBuilder.fromUriString(cancelUrl)
-                .queryParam("rentalId", rentalId)
-                .toUriString();
+    private BigDecimal calculateAmount(Rental rental, PaymentType type) {
+        BigDecimal baseAmount = calculateBaseAmount(rental);
+        return switch (type) {
+            case PAYMENT -> baseAmount;
+            case FINE -> baseAmount.add(calculateFineAmount(rental));
+        };
     }
 }

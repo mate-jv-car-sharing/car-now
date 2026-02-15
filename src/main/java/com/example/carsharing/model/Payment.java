@@ -50,7 +50,7 @@ public class Payment {
     @Column(nullable = false)
     private String sessionId;
 
-    @Column(nullable = false, precision = 6, scale = 2)
+    @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amountToPay;
 
     @Setter(AccessLevel.NONE)

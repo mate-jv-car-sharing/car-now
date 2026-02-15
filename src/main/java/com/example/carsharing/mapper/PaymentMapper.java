@@ -14,6 +14,5 @@ public interface PaymentMapper {
     @Mapping(target = "rental", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
-    @Mapping(target = "isDeleted", ignore = true)
     Payment toModel(CreatePaymentRequestDto requestDto);
 }

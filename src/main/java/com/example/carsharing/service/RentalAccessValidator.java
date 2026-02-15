@@ -12,8 +12,12 @@ import org.springframework.stereotype.Component;
 public class RentalAccessValidator {
     private final UserService userService;
 
+    public boolean isRentalOwner(User user, Rental rental) {
+        return rental.getUser().getId().equals(user.getId());
+    }
+
     public void validateRentalOwnership(User user, Rental rental) {
-        if (!rental.getUser().getId().equals(user.getId())) {
+        if (!isRentalOwner(user, rental)) {
             throw new RentalException(String.format(
                     "User with id %d is not the owner of the rental with id %d",
                     user.getId(),
