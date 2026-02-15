@@ -8,7 +8,6 @@ import com.example.carsharing.exception.RentalException;
 import com.example.carsharing.mapper.RentalMapper;
 import com.example.carsharing.model.Car;
 import com.example.carsharing.model.Rental;
-import com.example.carsharing.model.Role;
 import com.example.carsharing.model.User;
 import com.example.carsharing.repository.CarRepository;
 import com.example.carsharing.repository.RentalRepository;
@@ -73,9 +72,8 @@ public class RentalServiceImpl implements RentalService {
             RentalSearchParameters rentalSearchParameters,
             Pageable pageable
     ) {
-        boolean isManager = userService.isManager(user);
         RentalSearchParameters securedParams =
-                secureSearchParams(user, rentalSearchParameters, isManager);
+                secureSearchParams(user, rentalSearchParameters);
         Specification<Rental> rentalSpecification =
                 rentalSpecificationBuilder.buildSpecification(securedParams);
         return rentalRepository.findAll(rentalSpecification, pageable)
@@ -99,16 +97,15 @@ public class RentalServiceImpl implements RentalService {
         rentalRepository.save(existingRental);
     }
 
-    private static RentalSearchParameters secureSearchParams(
+    private RentalSearchParameters secureSearchParams(
             User user,
-            RentalSearchParameters rentalSearchParameters,
-            boolean isManager) {
-        if (isManager) {
-            return rentalSearchParameters;
+            RentalSearchParameters params) {
+        if (userService.isManager(user)) {
+            return params;
         }
-        String[] isActive = rentalSearchParameters == null
+        String[] isActive = params == null
                 ? null
-                : rentalSearchParameters.isActive();
+                : params.isActive();
         return new RentalSearchParameters(
                 new String[]{user.getId().toString()},
                 isActive
