@@ -8,13 +8,14 @@ import com.example.carsharing.exception.RentalException;
 import com.example.carsharing.mapper.RentalMapper;
 import com.example.carsharing.model.Car;
 import com.example.carsharing.model.Rental;
-import com.example.carsharing.model.Role;
 import com.example.carsharing.model.User;
 import com.example.carsharing.repository.CarRepository;
 import com.example.carsharing.repository.RentalRepository;
 import com.example.carsharing.repository.specification.rental.RentalSpecificationBuilder;
+import com.example.carsharing.service.RentalAccessValidator;
 import com.example.carsharing.service.notification.NotificationService;
 import com.example.carsharing.service.notification.factory.RentalMessageFactory;
+import com.example.carsharing.service.user.UserService;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,8 @@ public class RentalServiceImpl implements RentalService {
     private final CarRepository carRepository;
     private final RentalSpecificationBuilder rentalSpecificationBuilder;
     private final NotificationService notificationService;
+    private final UserService userService;
+    private final RentalAccessValidator rentalAccessValidator;
 
     @Override
     @Transactional
@@ -59,7 +62,7 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = rentalRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find rental with id " + id)
         );
-        validateRentalOwnership(user, rental);
+        rentalAccessValidator.validateRentalOwnership(user, rental);
         return rentalMapper.toDto(rental);
     }
 
@@ -69,9 +72,8 @@ public class RentalServiceImpl implements RentalService {
             RentalSearchParameters rentalSearchParameters,
             Pageable pageable
     ) {
-        boolean isManager = isManager(user);
         RentalSearchParameters securedParams =
-                secureSearchParams(user, rentalSearchParameters, isManager);
+                secureSearchParams(user, rentalSearchParameters);
         Specification<Rental> rentalSpecification =
                 rentalSpecificationBuilder.buildSpecification(securedParams);
         return rentalRepository.findAll(rentalSpecification, pageable)
@@ -84,7 +86,7 @@ public class RentalServiceImpl implements RentalService {
         Rental existingRental = rentalRepository.findById(rentalId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find rental with id " + rentalId)
         );
-        validateRentalOwnership(user, existingRental);
+        rentalAccessValidator.validateRentalOwnership(user, existingRental);
         if (existingRental.getActualReturnDate() != null) {
             throw new RentalException("Rental with id " + rentalId + " is already returned");
         }
@@ -95,32 +97,15 @@ public class RentalServiceImpl implements RentalService {
         rentalRepository.save(existingRental);
     }
 
-    private static boolean isManager(User user) {
-        return user.getRoles().stream()
-                .anyMatch(role -> role.getName() == Role.RoleName.MANAGER);
-    }
-
-    private static void validateRentalOwnership(User user, Rental rental) {
-        boolean isManager = isManager(user);
-        if (!isManager && !rental.getUser().getId().equals(user.getId())) {
-            throw new RentalException(String.format(
-                    "User with id %d is not the owner of the rental with id %d",
-                    user.getId(),
-                    rental.getId()
-            ));
-        }
-    }
-
-    private static RentalSearchParameters secureSearchParams(
+    private RentalSearchParameters secureSearchParams(
             User user,
-            RentalSearchParameters rentalSearchParameters,
-            boolean isManager) {
-        if (isManager) {
-            return rentalSearchParameters;
+            RentalSearchParameters params) {
+        if (userService.isManager(user)) {
+            return params;
         }
-        String[] isActive = rentalSearchParameters == null
+        String[] isActive = params == null
                 ? null
-                : rentalSearchParameters.isActive();
+                : params.isActive();
         return new RentalSearchParameters(
                 new String[]{user.getId().toString()},
                 isActive
