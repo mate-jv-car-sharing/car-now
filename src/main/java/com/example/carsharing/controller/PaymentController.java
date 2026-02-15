@@ -47,7 +47,7 @@ public class PaymentController {
 
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping("/success")
-    public PaymentResponseDto paymentSuccess(@RequestParam("session_id") String sessionId) {
+    public PaymentResponseDto paymentSuccess(@RequestParam("sessionId") String sessionId) {
         return paymentService.markAsPaid(sessionId);
     }
 
