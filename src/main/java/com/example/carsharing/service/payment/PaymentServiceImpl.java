@@ -39,12 +39,6 @@ public class PaymentServiceImpl implements PaymentService {
     private final RentalAccessValidator rentalAccessValidator;
     private final PaymentUrlBuilder paymentUrlBuilder;
 
-    @Value("${app.payment.success-url}")
-    private String successUrl;
-
-    @Value("${app.payment.cancel-url}")
-    private String cancelUrl;
-
     @Override
     public PaymentResponseDto create(CreatePaymentRequestDto request, User user) {
         Rental rental = rentalRepository.findById(request.rentalId())
