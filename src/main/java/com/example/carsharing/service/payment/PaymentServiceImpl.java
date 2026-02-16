@@ -13,6 +13,8 @@ import com.example.carsharing.model.enums.PaymentType;
 import com.example.carsharing.repository.PaymentRepository;
 import com.example.carsharing.repository.RentalRepository;
 import com.example.carsharing.service.RentalAccessValidator;
+import com.example.carsharing.service.notification.NotificationService;
+import com.example.carsharing.service.notification.factory.PaymentMessageFactory;
 import com.example.carsharing.service.user.UserService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
     private static final BigDecimal FINE_MULTIPLIER = BigDecimal.valueOf(2);
+    private static final String SESSION_STATUS_PAID = "paid";
 
     private final PaymentRepository paymentRepository;
     private final RentalRepository rentalRepository;
@@ -37,6 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserService userService;
     private final RentalAccessValidator rentalAccessValidator;
     private final PaymentUrlBuilder paymentUrlBuilder;
+    private final NotificationService notificationService;
 
     @Override
     public PaymentResponseDto create(CreatePaymentRequestDto request, User user) {
@@ -84,10 +88,25 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponseDto markAsPaid(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(
-                () -> new EntityNotFoundException("Can't find payment with id " + sessionId)
+                () -> new EntityNotFoundException(
+                        "Can't find payment with session id " + sessionId)
         );
-        payment.setStatus(PaymentStatus.PAID);
-        return paymentMapper.toDto(paymentRepository.save(payment));
+        if (payment.getStatus() == PaymentStatus.PAID) {
+            return paymentMapper.toDto(payment);
+        }
+        try {
+            Session session = stripeService.retrieveSession(sessionId);
+            if (!SESSION_STATUS_PAID.equals(session.getPaymentStatus())) {
+                throw new PaymentException("Payment is not completed in Stripe. Status: "
+                        + session.getPaymentStatus());
+            }
+            payment.setStatus(PaymentStatus.PAID);
+            notificationService.sendMessage(PaymentMessageFactory.successfulPayment(payment));
+            return paymentMapper.toDto(paymentRepository.save(payment));
+        } catch (StripeException e) {
+            throw new PaymentException(
+                    "Failed to verify payment with Stripe: " + e.getMessage(), e);
+        }
     }
 
     @Override

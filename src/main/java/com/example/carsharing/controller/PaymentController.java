@@ -45,19 +45,18 @@ public class PaymentController {
         return paymentService.getById(id, user);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping("/success")
     public PaymentResponseDto paymentSuccess(@RequestParam("sessionId") String sessionId) {
         return paymentService.markAsPaid(sessionId);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping("/cancel")
     public String paymentCancel(@RequestParam("rentalId") Long rentalId) {
         return "Payment for rental " + rentalId + " has been canceled. "
                 + "Try again later this day, please.";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping
     public Page<PaymentResponseDto> getPayments(
             @RequestParam(value = "userId", required = false) Long userId,
