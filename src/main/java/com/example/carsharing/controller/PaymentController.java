@@ -4,6 +4,8 @@ import com.example.carsharing.dto.payment.CreatePaymentRequestDto;
 import com.example.carsharing.dto.payment.PaymentResponseDto;
 import com.example.carsharing.model.User;
 import com.example.carsharing.service.payment.PaymentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,12 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/payments")
 @RequiredArgsConstructor
+@Tag(name = "Payments", description = "Payment management and Stripe integration")
+@RequestMapping("/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;
 
+    @Operation(
+            summary = "Create a payment session",
+            description = "Creates Stripe checkout session for rental"
+    )
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @PostMapping
     public PaymentResponseDto createPayment(
@@ -36,6 +43,7 @@ public class PaymentController {
         return paymentService.create(requestDto, user);
     }
 
+    @Operation(summary = "Get payment by ID")
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping("/{id}")
     public PaymentResponseDto getPaymentById(
@@ -45,17 +53,29 @@ public class PaymentController {
         return paymentService.getById(id, user);
     }
 
+    @Operation(
+            summary = "Handle successful payment",
+            description = "Stripe redirects here after successful payment"
+    )
     @GetMapping("/success")
     public PaymentResponseDto paymentSuccess(@RequestParam("sessionId") String sessionId) {
         return paymentService.markAsPaid(sessionId);
     }
 
+    @Operation(
+            summary = "Handle cancelled payment",
+            description = "Stripe redirects here when payment is cancelled"
+    )
     @GetMapping("/cancel")
     public String paymentCancel(@RequestParam("rentalId") Long rentalId) {
         return "Payment for rental " + rentalId + " has been canceled. "
                 + "Try again later this day, please.";
     }
 
+    @Operation(
+            summary = "Get all payments",
+            description = "Customers see only their payments, managers can filter by user"
+    )
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping
     public Page<PaymentResponseDto> getPayments(
