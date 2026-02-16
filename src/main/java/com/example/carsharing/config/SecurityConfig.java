@@ -42,7 +42,9 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         antMatcher("/auth/**"),
                                         antMatcher(HttpMethod.GET, "/cars/**"),
-                                        antMatcher("/error"))
+                                        antMatcher("/error"),
+                                        antMatcher("/swagger-ui/**"),
+                                        antMatcher("/v3/api-docs/**"))
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
