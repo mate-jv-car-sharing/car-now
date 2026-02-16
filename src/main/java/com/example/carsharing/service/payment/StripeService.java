@@ -45,4 +45,8 @@ public class StripeService {
                 .build();
         return Session.create(params);
     }
+
+    public Session retrieveSession(String sessionId) throws StripeException {
+        return Session.retrieve(sessionId);
+    }
 }
