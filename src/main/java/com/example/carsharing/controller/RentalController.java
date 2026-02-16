@@ -5,6 +5,8 @@ import com.example.carsharing.dto.rental.RentalResponseDto;
 import com.example.carsharing.dto.rental.RentalSearchParameters;
 import com.example.carsharing.model.User;
 import com.example.carsharing.service.rental.RentalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/rentals")
 @RequiredArgsConstructor
+@Tag(name = "Rentals", description = "Rental management APIs")
+@RequestMapping("/rentals")
 public class RentalController {
 
     private final RentalService rentalService;
 
+    @Operation(summary = "Create a new rental", description = "Rent a car for specified period")
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public RentalResponseDto createRental(
             @AuthenticationPrincipal User user,
             @Valid @RequestBody CreateRentalRequestDto requestDto
@@ -41,6 +45,7 @@ public class RentalController {
         return rentalService.create(user, requestDto);
     }
 
+    @Operation(summary = "Get rental by ID")
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping("/{id}")
     public RentalResponseDto findById(
@@ -50,6 +55,10 @@ public class RentalController {
         return rentalService.findById(user, id);
     }
 
+    @Operation(
+            summary = "Get all rentals",
+            description = "Customers see only their rentals, managers can filter by user and status"
+    )
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping
     public Page<RentalResponseDto> getRentals(
@@ -60,9 +69,13 @@ public class RentalController {
         return rentalService.getRentals(user, searchParameters, pageable);
     }
 
+    @Operation(
+            summary = "Return a rental",
+            description = "Mark rental as returned and update car inventory"
+    )
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/{id}/return")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void returnRental(
             @AuthenticationPrincipal User user,
             @Positive @PathVariable Long id
