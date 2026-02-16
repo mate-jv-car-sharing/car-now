@@ -32,46 +32,46 @@ import org.springframework.web.bind.annotation.RestController;
 public class CarController {
     private final CarService carService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('MANAGER')")
     @Operation(
             summary = "Create a new car",
             description = "Add a new car to the inventory. Manager only."
     )
+    @PreAuthorize("hasAnyRole('MANAGER')")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CarResponseDto create(@Valid @RequestBody CarRequestDto requestDto) {
         return carService.create(requestDto);
     }
 
-    @GetMapping
     @Operation(
             summary = "Get all cars",
             description = "Retrieve a paginated list of all available cars"
     )
+    @GetMapping
     public Page<CarResponseDto> findAll(
             @PageableDefault(size = 15, sort = "id") Pageable pageable
     ) {
         return carService.findAll(pageable);
     }
 
-    @GetMapping("/{id}")
     @Operation(summary = "Get car by ID")
+    @GetMapping("/{id}")
     public CarResponseDto findCarById(@Positive @PathVariable Long id) {
         return carService.findById(id);
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER')")
     @Operation(summary = "Update car", description = "Update car details. Manager only.")
+    @PreAuthorize("hasAnyRole('MANAGER')")
+    @PutMapping("/{id}")
     public CarResponseDto update(@Positive @PathVariable Long id,
                                  @Valid @RequestBody CarRequestDto requestDto) {
         return carService.update(id, requestDto);
     }
 
+    @Operation(summary = "Delete car", description = "Remove car from inventory. Manager only.")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('MANAGER')")
-    @Operation(summary = "Delete car", description = "Remove car from inventory. Manager only.")
     public void delete(@Positive @PathVariable Long id) {
         carService.delete(id);
     }
