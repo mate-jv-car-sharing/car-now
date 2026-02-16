@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/cars")
 @RequiredArgsConstructor
 @Tag(name = "Cars", description = "Car management APIs")
+@RequestMapping("/cars")
 public class CarController {
     private final CarService carService;
 
