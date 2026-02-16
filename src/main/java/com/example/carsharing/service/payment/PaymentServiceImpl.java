@@ -13,6 +13,8 @@ import com.example.carsharing.model.enums.PaymentType;
 import com.example.carsharing.repository.PaymentRepository;
 import com.example.carsharing.repository.RentalRepository;
 import com.example.carsharing.service.RentalAccessValidator;
+import com.example.carsharing.service.notification.NotificationService;
+import com.example.carsharing.service.notification.factory.PaymentMessageFactory;
 import com.example.carsharing.service.user.UserService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -24,7 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.support.SessionStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserService userService;
     private final RentalAccessValidator rentalAccessValidator;
     private final PaymentUrlBuilder paymentUrlBuilder;
+    private final NotificationService notificationService;
 
     @Override
     public PaymentResponseDto create(CreatePaymentRequestDto request, User user) {
@@ -99,6 +101,7 @@ public class PaymentServiceImpl implements PaymentService {
                         + session.getPaymentStatus());
             }
             payment.setStatus(PaymentStatus.PAID);
+            notificationService.sendMessage(PaymentMessageFactory.successfulPayment(payment));
             return paymentMapper.toDto(paymentRepository.save(payment));
         } catch (StripeException e) {
             throw new PaymentException(
