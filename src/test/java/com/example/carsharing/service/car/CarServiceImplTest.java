@@ -17,6 +17,7 @@ import com.example.carsharing.repository.CarRepository;
 import com.example.carsharing.util.CarTestDataFactory;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,6 +41,7 @@ class CarServiceImplTest {
     private CarServiceImpl carService;
 
     @Test
+    @DisplayName("Creating a car with valid request should return CarResponseDto")
     void create_ValidRequest_ReturnsCarResponseDto() {
         CarRequestDto requestDto = CarTestDataFactory.getCarRequestDto();
         Car car = CarTestDataFactory.getCar();
@@ -66,6 +68,7 @@ class CarServiceImplTest {
     }
 
     @Test
+    @DisplayName("Finding all cars should return paged CarResponseDto")
     void findAll_ReturnsPagedCarResponseDto() {
         CarResponseDto responseDto = CarTestDataFactory.getCarResponseDto();
         Car car = CarTestDataFactory.getSavedCar();
@@ -86,6 +89,7 @@ class CarServiceImplTest {
     }
 
     @Test
+    @DisplayName("Finding a car by valid ID should return CarResponseDto")
     void findById_ValidId_ReturnsCarResponseDto() {
         Long carId = 1L;
         Car car = CarTestDataFactory.getSavedCar();
@@ -105,6 +109,7 @@ class CarServiceImplTest {
     }
 
     @Test
+    @DisplayName("Finding a car by invalid ID should throw EntityNotFoundException")
     void findById_InvalidId_ThrowsEntityNotFoundException() {
         Long invalidId = 666L;
         when(carRepository.findById(invalidId)).thenReturn(Optional.empty());
@@ -120,6 +125,7 @@ class CarServiceImplTest {
     }
 
     @Test
+    @DisplayName("Updating a car with valid ID and request should return updated CarResponseDto")
     void update_ValidIdAndRequest_ReturnsUpdatedCarResponseDto() {
         Long carId = 1L;
         CarRequestDto requestDto = CarTestDataFactory.getCarRequestDto();
@@ -143,6 +149,7 @@ class CarServiceImplTest {
     }
 
     @Test
+    @DisplayName("Updating a car with invalid ID should throw EntityNotFoundException")
     void update_InvalidId_ThrowsEntityNotFoundException() {
         Long invalidId = 666L;
         CarRequestDto requestDto = CarTestDataFactory.getCarRequestDto();
@@ -161,6 +168,7 @@ class CarServiceImplTest {
     }
 
     @Test
+    @DisplayName("Deleting a car with valid ID should delete the car")
     void delete_ValidId_DeletesCar() {
         Long carId = 1L;
         when(carRepository.existsById(carId)).thenReturn(true);
@@ -172,6 +180,7 @@ class CarServiceImplTest {
     }
 
     @Test
+    @DisplayName("Deleting a car with invalid ID should throw EntityNotFoundException")
     void delete_InvalidId_ThrowsEntityNotFoundException() {
         Long invalidId = 666L;
         when(carRepository.existsById(invalidId)).thenReturn(false);

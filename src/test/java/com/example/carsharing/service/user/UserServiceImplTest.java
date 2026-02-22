@@ -21,6 +21,7 @@ import com.example.carsharing.repository.RoleRepository;
 import com.example.carsharing.repository.UserRepository;
 import com.example.carsharing.util.UserTestDataFactory;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,6 +48,7 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
+    @DisplayName("register should create a new user and return UserResponseDto when request is valid")
     void register_ValidRequest_ReturnsUserResponseDto() {
         UserRegistrationRequestDto requestDto = UserTestDataFactory.getValidRegistrationRequest();
         User user = UserTestDataFactory.getUser();
@@ -78,6 +80,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("register should throw RegistrationException when passwords do not match")
     void register_PasswordsDoNotMatch_ThrowsRegistrationException() {
         UserRegistrationRequestDto requestDto =
                 UserTestDataFactory.getRegistrationRequestWithMismatchedPasswords();
@@ -93,6 +96,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("register should throw RegistrationException when email already exists")
     void register_EmailAlreadyExists_ThrowsRegistrationException() {
         UserRegistrationRequestDto requestDto =
                 UserTestDataFactory.getRegistrationRequestWithExistingEmail();
@@ -112,6 +116,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("register should throw EntityNotFoundException when CUSTOMER role is not found")
     void register_CustomerRoleNotFound_ThrowsEntityNotFoundException() {
         UserRegistrationRequestDto requestDto = UserTestDataFactory.getValidRegistrationRequest();
         User user = UserTestDataFactory.getUser();
@@ -132,6 +137,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("hasRole should return true when user has the specified role")
     void hasRole_UserHasRole_ReturnsTrue() {
         User user = UserTestDataFactory.getUserWithCustomerRoleAndId();
 
@@ -141,6 +147,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("hasRole should return false when user does not have the specified role")
     void hasRole_UserDoesNotHaveRole_ReturnsFalse() {
         User user = UserTestDataFactory.getUserWithCustomerRoleAndId();
 
@@ -150,6 +157,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("isManager should return")
     void isManager_UserIsManager_ReturnsTrue() {
         User user = UserTestDataFactory.getUserWithManagerRoleAndId();
 
@@ -159,6 +167,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("isManager should return false when user is not a manager")
     void isManager_UserIsNotManager_ReturnsFalse() {
         User user = UserTestDataFactory.getUserWithCustomerRoleAndId();
 

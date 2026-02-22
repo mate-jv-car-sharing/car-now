@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -80,6 +81,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Creating a rental with valid request should return RentalResponseDto and decrease car inventory")
     void create_ValidRequest_ReturnsRentalResponseDtoAndDecreasesInventory() {
         CreateRentalRequestDto requestDto = new CreateRentalRequestDto(
                 LocalDate.now().plusDays(5),
@@ -99,6 +101,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Creating a rental with non-existing car ID should throw EntityNotFoundException")
     void create_NotExistingId_ThrowsEntityNotFoundException() {
         Long nonExistingCarId = 666L;
         CreateRentalRequestDto requestDto = new CreateRentalRequestDto(
@@ -116,6 +119,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Creating a rental when car inventory is 0 should throw RentalException")
     void create_NoInventory_ThrowsRentalException() {
         car.setInventory(0);
         carRepository.saveAndFlush(car);
@@ -131,6 +135,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Getting rentals as customer should return only own rentals, while manager should return all rentals")
     void getRentals_AsCustomer_ReturnsOnlyOwnRentals() {
         CreateRentalRequestDto requestDto1 = new CreateRentalRequestDto(
                 LocalDate.now().plusDays(7),
@@ -154,6 +159,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Getting rentals as manager should return all rentals, while customer should return only own rentals")
     void getRentals_AsManager_ReturnsAllRentals() {
         CreateRentalRequestDto requestDto1 = new CreateRentalRequestDto(
                 LocalDate.now().plusDays(7),
@@ -183,6 +189,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Returning a rental with valid rental should increase car inventory and set actual return date")
     void returnRental_ValidRental_IncreasesInventoryAndSetsReturnDate() {
 
         CreateRentalRequestDto requestDto = new CreateRentalRequestDto(
@@ -203,6 +210,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Returning a rental that is already returned should throw RentalException")
     void returnRental_AlreadyReturned_ThrowsRentalException() {
         CreateRentalRequestDto requestDto = new CreateRentalRequestDto(
                 LocalDate.now().plusDays(7),
@@ -217,6 +225,7 @@ class RentalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Getting rentals with active status filter should return only active rentals")
     void getRentals_FilterByActiveStatus_ReturnsOnlyActiveRentals() {
 
         CreateRentalRequestDto requestDto1 = new CreateRentalRequestDto(

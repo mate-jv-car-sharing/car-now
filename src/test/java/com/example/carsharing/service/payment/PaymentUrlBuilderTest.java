@@ -8,6 +8,7 @@ import com.example.carsharing.model.enums.PaymentType;
 import com.example.carsharing.util.RentalTestDataFactory;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -37,6 +38,7 @@ class PaymentUrlBuilderTest {
     }
 
     @Test
+    @DisplayName("buildUrls should append rentalId and type to successUrl, and rentalId only to cancelUrl")
     void buildUrls_shouldAppendRentalIdAndTypeToSuccessUrl() {
         Rental rental = RentalTestDataFactory.getSavedRental();
 
