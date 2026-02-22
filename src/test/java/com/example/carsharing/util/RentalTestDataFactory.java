@@ -1,8 +1,6 @@
 package com.example.carsharing.util;
 
-import com.example.carsharing.dto.rental.CreateRentalRequestDto;
 import com.example.carsharing.model.Rental;
-import com.example.carsharing.model.User;
 import java.time.LocalDate;
 import org.springframework.test.util.ReflectionTestUtils;
 
