@@ -56,7 +56,7 @@ public class CarController {
 
     @Operation(summary = "Get car by ID")
     @GetMapping("/{id}")
-    public CarResponseDto findCarById(@Positive @PathVariable Long id) {
+    public CarResponseDto findById(@Positive @PathVariable Long id) {
         return carService.findById(id);
     }
 

@@ -7,6 +7,7 @@ import com.example.carsharing.service.payment.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +48,7 @@ public class PaymentController {
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping("/{id}")
     public PaymentResponseDto getPaymentById(
-            @PathVariable Long id,
+            @Positive @PathVariable Long id,
             @AuthenticationPrincipal User user
     ) {
         return paymentService.getById(id, user);
@@ -67,7 +68,7 @@ public class PaymentController {
             description = "Stripe redirects here when payment is cancelled"
     )
     @GetMapping("/cancel")
-    public String paymentCancel(@RequestParam("rentalId") Long rentalId) {
+    public String paymentCancel(@Positive @RequestParam("rentalId") Long rentalId) {
         return "Payment for rental " + rentalId + " has been canceled. "
                 + "Try again later this day, please.";
     }
@@ -79,7 +80,7 @@ public class PaymentController {
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     @GetMapping
     public Page<PaymentResponseDto> getPayments(
-            @RequestParam(value = "userId", required = false) Long userId,
+            @Positive @RequestParam(value = "userId", required = false) Long userId,
             @AuthenticationPrincipal User user,
             Pageable pageable) {
         return paymentService.getAllByUser(user, userId, pageable);
