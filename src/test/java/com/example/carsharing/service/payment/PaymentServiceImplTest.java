@@ -469,6 +469,7 @@ class PaymentServiceImplTest {
         when(paymentRepository.save(pendingPayment)).thenReturn(pendingPayment);
         PaymentResponseDto expected = PaymentTestDataFactory.getPaymentResponseDto(pendingPayment);
         when(paymentMapper.toDto(pendingPayment)).thenReturn(expected);
+        when(session.getId()).thenReturn(sessionId);
 
         PaymentResponseDto actual = paymentService.markAsPaid(sessionId);
 

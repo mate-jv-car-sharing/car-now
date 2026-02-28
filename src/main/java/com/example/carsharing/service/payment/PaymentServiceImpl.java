@@ -26,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +72,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PaymentResponseDto getById(Long paymentId, User user) {
         Payment payment = paymentRepository.findById(paymentId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find payment with id " + paymentId));
@@ -86,6 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public PaymentResponseDto markAsPaid(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException(
@@ -96,10 +99,17 @@ public class PaymentServiceImpl implements PaymentService {
         }
         try {
             Session session = stripeService.retrieveSession(sessionId);
+
             if (!SESSION_STATUS_PAID.equals(session.getPaymentStatus())) {
                 throw new PaymentException("Payment is not completed in Stripe. Status: "
                         + session.getPaymentStatus());
             }
+
+            if (!session.getId().equals(payment.getSessionId())) {
+                throw new PaymentException("Stripe session mismatch: expected "
+                        + payment.getSessionId() + " but got " + session.getId());
+            }
+
             payment.setStatus(PaymentStatus.PAID);
             notificationService.sendMessage(PaymentMessageFactory.successfulPayment(payment));
             return paymentMapper.toDto(paymentRepository.save(payment));
@@ -110,6 +120,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<PaymentResponseDto> getAllByUser(
             User user,
             Long requestUserId,
