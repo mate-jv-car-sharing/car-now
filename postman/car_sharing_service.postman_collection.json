@@ -1,0 +1,609 @@
+{
+  "info": {
+    "_postman_id": "eff0d63d-a0f1-4a50-ad50-e01296023ccb",
+    "name": "CAR SHARING",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9745685",
+    "_collection_link": "https://go.postman.co/collection/9745685-eff0d63d-a0f1-4a50-ad50-e01296023ccb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "car",
+      "item": [
+        {
+          "name": "car - create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0LnVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NzE5NjQ0MDUsImV4cCI6MTc3MTk5NDQwNX0.UlYT85C7vxYF6hcURk8yOUUEy8MeZ58lIjSduQX_MZS_Nfqne12rjtfE2BsBof99",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// {\r\n//   \"model\": \"Camry\",\r\n//   \"brand\": \"Toyota\",\r\n//   \"type\": \"SEDAN\",\r\n//   \"inventory\": 10,\r\n//   \"dailyFee\": 55.00\r\n// }\r\n{\r\n  \"model\": \"dsafg\",\r\n  \"brand\": \"BMW\",\r\n  \"type\": \"SUV\",\r\n  \"inventory\": 3,\r\n  \"dailyFee\": 120.50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cars",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cars"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "car - get all",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cars",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cars"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "car - get by id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// {\r\n//   \"model\": \"Camry\",\r\n//   \"brand\": \"Toyota\",\r\n//   \"type\": \"SEDAN\",\r\n//   \"inventory\": 10,\r\n//   \"dailyFee\": 55.00\r\n// }\r\n{\r\n  \"model\": \"X5\",\r\n  \"brand\": \"BMW\",\r\n  \"type\": \"SUV\",\r\n  \"inventory\": 3,\r\n  \"dailyFee\": 120.50\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cars/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cars",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "car - update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"model\": \"X5\",\r\n  \"brand\": \"BMW\",\r\n  \"type\": \"SUV\",\r\n  \"inventory\": 3,\r\n  \"dailyFee\": 999\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cars/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cars",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "car - delete by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBjYXJzaGFyaW5nLmNvbSIsImlhdCI6MTc3MDU3OTM4MywiZXhwIjoxNzcwNTgyMzgzfQ.YWhA_I4KExAObaCqsd9OWHkMNgzLafCTpIMOI_gVL_R_Fzap3UYHDBeVgC9FG0ia",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// {\r\n//   \"model\": \"Camry\",\r\n//   \"brand\": \"Toyota\",\r\n//   \"type\": \"SEDAN\",\r\n//   \"inventory\": 10,\r\n//   \"dailyFee\": 55.00\r\n// }\r\n{\r\n  \"model\": \"X5\",\r\n  \"brand\": \"BMW\",\r\n  \"type\": \"SUV\",\r\n  \"inventory\": 3,\r\n  \"dailyFee\": 120.50\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cars/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cars",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "user login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// {\r\n//     \"email\": \"user@carsharing.com\",\r\n//     \"password\": \"Strongpass123!\"\r\n// }\r\n\r\n{\r\n    \"email\": \"test.user@example.com\",\r\n    \"password\": \"Strongpass123!\"\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "admin login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@carsharing.com\",\r\n    \"password\": \"Strongpass123!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"test.user@example.com\",\r\n  \"firstName\": \"\",\r\n  \"lastName\": \"Kukharenko\",\r\n  \"password\": \"Strongpass123!\",\r\n  \"repeatPassword\": \"Strongpass123!\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/registration",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "registration"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "rental",
+      "item": [
+        {
+          "name": "rental - create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0LnVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NzExODM0ODAsImV4cCI6MTc3MTIxMzQ4MH0.lCvLXBL3SmAJsBAX6VJGiLCkw1Z_8iVuB1prR2QS16cPLL7by5XD_S11nvvDMJUH",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"returnDate\": \"2026-02-20\",\r\n  \"carId\": \"2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/rentals",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rentals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "rental - return",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5dXJhLmt1a2hhcmVua29AZXhhbXBsZS5jb20iLCJpYXQiOjE3NzEwMDQzOTksImV4cCI6MTc3MTAzNDM5OX0.W1sj3TCwGnFeQHp4qyN45QW_gXGqBE2KHTNkQs-vSe3KDJsZE6EI946A2U83m3fS",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/rentals/10/return",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rentals",
+                "10",
+                "return"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "rental - search",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyQGNhcnNoYXJpbmcuY29tIiwiaWF0IjoxNzcwOTEwNzI5LCJleHAiOjE3NzA5NDA3Mjl9.E14J7LK1COwT3xEZgUhPkbhhCxhozj41E6kVnhB_XvpLX5WOjZaHPpbg51d9GkGW",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/rentals?isActive=true&userId=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rentals"
+              ],
+              "query": [
+                {
+                  "key": "isActive",
+                  "value": "true"
+                },
+                {
+                  "key": "userId",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "rental - get by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyQGNhcnNoYXJpbmcuY29tIiwiaWF0IjoxNzcwOTEwNzI5LCJleHAiOjE3NzA5NDA3Mjl9.E14J7LK1COwT3xEZgUhPkbhhCxhozj41E6kVnhB_XvpLX5WOjZaHPpbg51d9GkGW",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/rentals/6",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rentals",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "payment",
+      "item": [
+        {
+          "name": "payment - create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBjYXJzaGFyaW5nLmNvbSIsImlhdCI6MTc3MTI2NTMwMiwiZXhwIjoxNzcxMjk1MzAyfQ.PwRWjXUUqGUEHV3x8z3cVirFrDFeh9nj0WKGKAPyYWBJ2DJPu9sVJl_vAXTRaXhP",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rentalId\": 3,\r\n    \"type\": \"PAYMENT\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/payments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "payments - get by id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0LnVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NzExNjEzOTIsImV4cCI6MTc3MTE5MTM5Mn0.X-cgt2_M9vOjh7b0mDdiMJalLLQGf_DP7ZKIrk-R5_LSuDQChSdg7rPcyXqLt1Q6",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/payments/14",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "payments",
+                "14"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "payment - get by user/all",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0LnVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NzExNjEzOTIsImV4cCI6MTc3MTE5MTM5Mn0.X-cgt2_M9vOjh7b0mDdiMJalLLQGf_DP7ZKIrk-R5_LSuDQChSdg7rPcyXqLt1Q6",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/payments?userId=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "payments"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "payment - success",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBjYXJzaGFyaW5nLmNvbSIsImlhdCI6MTc3MTI3MTgyNiwiZXhwIjoxNzcxMzAxODI2fQ.oK8RaaDUTOcUOFhXcqWJnqEEoXUG1qanaUjnrqjSi-_egqW_voOCoISprrTz-9w5",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/payments/success?sessionId=cs_test_a10Ica32lush1xPEiZw45QwfjhEDm147lTVM5d7T06hFqOwzmWJDqN2Y6F",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "payments",
+                "success"
+              ],
+              "query": [
+                {
+                  "key": "sessionId",
+                  "value": "cs_test_a10Ica32lush1xPEiZw45QwfjhEDm147lTVM5d7T06hFqOwzmWJDqN2Y6F"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "health-check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
